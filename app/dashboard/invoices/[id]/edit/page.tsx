@@ -1,7 +1,8 @@
 import Form from '@/app/ui/invoices/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
- 
+import { notFound } from 'next/navigation'; // Using Not Found component to handle errors
+
 export default async function Page(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
     const id = params.id;
@@ -9,7 +10,11 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
       fetchInvoiceById(id),
       fetchCustomers(),
     ]); //You can use Promise.all to fetch both the invoice and customers in parallel:
-  return (
+    
+    if (!invoice) {
+      notFound();
+    }
+    return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
